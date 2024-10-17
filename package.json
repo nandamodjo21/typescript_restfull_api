@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx ts-node main.ts"
+    "build": "tsc && copy .env build\\. && copy package.json build\\. && copy package-lock.json build\\.",
+    "dev": "npx ts-node main.ts",
+    "prod": "nodemon build/main.js",
+    "start" : "nodemon main.js"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -27,6 +30,7 @@
     "@types/md5": "^2.3.5",
     "@types/node": "^22.7.5",
     "@types/uuid": "^10.0.0",
+    "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }

@@ -12,4 +12,7 @@ publicRoute.get("/", (req:Request, res:Response) => {
 publicRoute.get("/users", UserController.users);
 publicRoute.post("/login",LoginController.login);
 publicRoute.post("/register",RegisterController.register);
+
+
+
 export default publicRoute;
