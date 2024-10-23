@@ -8,6 +8,7 @@ export type LoginResponse = {
     name:string;
     username:string;
     email:string;
+    active:string;
     createdAt:Date;
 }
 
@@ -17,6 +18,7 @@ export  function toLoginResponse(user: any): LoginResponse {
         name:user.name,
         username:user.username,
         email:user.email,
+        active:user.active,
         createdAt:user.created_at
     }
 }
