@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dotEnv from "dotenv";
 import {transporter} from "../config/email";
 import {sock, startBot} from "../utils/star_sock";
+import {generateWAMessageFromContent, proto} from "@whiskeysockets/baileys";
 dotEnv.config();
 export class RegisterService {
     static async register(req: RegisterRequest): Promise<void> {
@@ -65,9 +66,12 @@ export class RegisterService {
 
 }
 async function sendOtpToWhatsApp(jid: string, otpCode: string) {
-    console.log(jid + otpCode);
-    const otpCodeInt = parseInt(otpCode, 10);
-    const message = `Your OTP code is: ${otpCodeInt}. Please use this code to complete your registration.`;
-    sock.sendMessage(jid, {text: message});
+    // console.log(jid + otpCode);
+    // const otpCodeInt = parseInt(otpCode, 10);
+    // const message = `Your OTP code is: ${otpCodeInt}. Please use this code to complete your registration.`;
+    // sock.sendMessage(jid, {text: message});
+
+
+
 }
 
