@@ -5,11 +5,12 @@
   "scripts": {
     "build": "tsc && copy .env build\\. && copy package.json build\\. && copy package-lock.json build\\.",
     "dev": "npx ts-node main.ts",
-    "prod": "nodemon build/main.js",
-    "start": "nodemon main.js"
+    "start": "node build/main.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "typescript restfull API"
+  ],
+  "author": "Jeff4Dev",
   "license": "ISC",
   "description": "",
   "module": "",
