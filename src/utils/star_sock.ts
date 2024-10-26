@@ -71,62 +71,7 @@ export async function startBot() {
 
     const remoteJid = incomingMessage.key.remoteJid;
     const messagesContent = incomingMessage.message.conversation;
-    if (messagesContent === "list") {
-      const listMessage = proto.Message.ListMessage.create({
-        title: "Pilihan Produk",
-        description: "Silakan pilih salah satu produk.",
-        buttonText: "Pilih",
-        listType: proto.Message.ListMessage.ListType.SINGLE_SELECT,
-        sections: [
-          proto.Message.ListMessage.Section.create({
-            title: "Kategori 1",
-            rows: [
-              proto.Message.ListMessage.Row.create({
-                title: "Produk A",
-                description: "Deskripsi A",
-                rowId: "prod_a",
-              }),
-              proto.Message.ListMessage.Row.create({
-                title: "Produk B",
-                description: "Deskripsi B",
-                rowId: "prod_b",
-              }),
-            ],
-          }),
-          proto.Message.ListMessage.Section.create({
-            title: "Kategori 2",
-            rows: [
-              proto.Message.ListMessage.Row.create({
-                title: "Produk C",
-                description: "Deskripsi C",
-                rowId: "prod_c",
-              }),
-              proto.Message.ListMessage.Row.create({
-                title: "Produk D",
-                description: "Deskripsi D",
-                rowId: "prod_d",
-              }),
-            ],
-          }),
-        ],
-        footerText: "Terima kasih telah berbelanja!",
-      });
 
-      const msg = generateWAMessageFromContent(
-        remoteJid,
-        { listMessage: listMessage },
-        {
-          userJid: sock.user.id,
-        }
-      );
-
-      try {
-        await sock.sendMessage(remoteJid, msg.message);
-        console.log("Pesan ListMessage berhasil dikirim");
-      } catch (error) {
-        console.error("Gagal mengirim pesan ListMessage:", error);
-      }
-    }
     if (messagesContent === "button") {
       const imageUrl =
         "https://w7.pngwing.com/pngs/781/186/png-transparent-android-software-development-rooting-android-fictional-character-material-mobile-phones.png";
@@ -141,6 +86,51 @@ export async function startBot() {
         );
         return generated[`${type}Message`];
       };
+
+      //section List----------------------------
+
+      const listSections = [
+        {
+          title:"section 1",
+          rows:[
+            {
+              header:'ini header section 1',
+              title:'ini section 1',
+              description:'ini desc section 1',
+              id:'1'
+            },
+            {
+              header:'ini header section 1/2',
+              title:'ini section 1/2',
+              description:'ini desc section 1/2',
+              id:'2'
+            }
+          ]
+        },
+        {
+          title:"section 2",
+          rows:[
+            {
+              header:'ini header section 2',
+              title:'ini section 2',
+              description:'ini desc section 2',
+              id:'1'
+            },
+            {
+              header:'ini header section 2/2',
+              title:'ini section 2/2',
+              description:'ini desc section 2/2',
+              id:'2'
+            }
+          ]
+        }
+      ];
+
+      //section List----------------------------
+
+
+
+      // Button ----------------------------
 
       const buttons = [
         {
@@ -178,15 +168,7 @@ export async function startBot() {
           name: "single_select",
           buttonParamsJson: JSON.stringify({
             title: "PILIH",
-            id: "id5",
-            listType: proto.Message.ListMessage.ListType.SINGLE_SELECT,
-            list: [
-              proto.Message.ListMessage.Row.create({
-                title: "Produk A",
-                description: "Deskripsi A",
-                rowId: "prod_a",
-              }),
-            ],
+            sections:listSections
           }),
         },
       ];
