@@ -11,19 +11,29 @@ export  class LoginService {
 
          const loginRequest = Validation.validate(AuthValidation.LOGIN,req);
 
-         const [rows] = await conn.promise().query(`SELECT kd_user,name,username,email,password,created_at FROM users WHERE email = "${loginRequest.email}"`);
-         const  result = rows as any[];
-         if (result.length >0){
-             const user = result[0];
-             const isValidPass = await bcrypt.compare(loginRequest.password,user.password);
-             if (isValidPass){
-                 console.log(user);
-                 return toLoginResponse(user);
+         try {
+             const [rows] = await conn.promise().query(`SELECT * FROM users WHERE email = "${loginRequest.email}"`);
+             const  result = rows as any[];
+             console.log(`result: ${result}`);
+             if (result.length >0){
+                 const user = result[0];
+                 console.log(`users ${user}`);
+                 const isValidPass = await bcrypt.compare(loginRequest.password,user.password);
+                 const isActive = user.active;
+                 if (isValidPass){
+                     if (isActive === 'ACTIVE'){
+                         return toLoginResponse(user);
+                     }else{
+                         throw new ResponseError(401,`Please Activation your account`)
+                     }
+                 }else{
+                     throw new ResponseError(401,"Unauthorized");
+                 }
              }else{
-                 throw new ResponseError(401,"Unauthorized");
+                 throw new ResponseError(404,"user not found");
              }
-         }else{
-             throw new ResponseError(404,"user not found");
+         }catch (e) {
+             throw new ResponseError(500,'Internal Server Error');
          }
     }
 }

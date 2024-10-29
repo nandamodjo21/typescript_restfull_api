@@ -1,4 +1,5 @@
 
+
 const {
   DisconnectReason,
   makeWASocket,
@@ -49,8 +50,6 @@ export async function startBot() {
 
     const remoteJid = incomingMessage.key.remoteJid;
     const messagesContent = incomingMessage.message.conversation;
-    const name = incomingMessage.message.conversation.name;
-    console.log(`nama ${name}`)
     const key = {
       remoteJid:remoteJid,
       id: 'AHASHH123123AHGA', // id of the message you want to read
@@ -205,57 +204,62 @@ export async function startBot() {
   sock.ev.on("messages.upsert",async (m:any)=>{
     const incomingMessage = m.messages[0];
     if (incomingMessage?.key.fromMe) return;
-
     const remoteJid = incomingMessage.key.remoteJid;
     const messagesContent = incomingMessage.message.conversation;
+    console.log(incomingMessage)
+    let selectedDisplayText = null;
+    let interactiveBody = null;
+
+    if (incomingMessage.message.templateButtonReplyMessage) {
+     selectedDisplayText = incomingMessage.message.templateButtonReplyMessage.selectedDisplayText;
+    }
+    if (incomingMessage.message.interactiveResponseMessage) {
+      interactiveBody = incomingMessage.message.interactiveResponseMessage.body.text
+      console.log("Interactive Body:", interactiveBody);
+    }
+
+    const imageUrl = `https://birddogwhiskey.com/app/uploads/2023/08/SmoresBottle-wdrink-ByFire-v1.jpg`;
+    const csaiImage = `https://convertri.imgix.net/f5558a04-e6a1-11e9-99fe-0697e5ca793e%2Ffa30e97c6c3b79f5b7e69f78c8555d66f96c5f16%2Flogo%20csai.svg`;
+    const generate = async (type: any, url: string) => {
+      const generated = await generateWAMessageContent(
+          {
+            [type]: { url },
+          },
+          {
+            upload: sock.waUploadToServer,
+          }
+      );
+      return generated[`${type}Message`];
+    };
     if (messagesContent === 'ok'){
-
-
       const listSections = [
         {
           rows:[
             {
-              title:'Captikus',
+              title:'*Captikus*',
               description:'ini cap tikus sangat ampuh untuk membuat anda terbang',
               id:'1'
             },
             {
 
-              title:'Pinaraci',
+              title:'*Pinaraci*',
               description:'ini lumayan lah untuk ngefly dikit',
               id:'2'
             },
             {
 
-              title:'Bohito',
+              title:'*Bohito*',
               description:'minuman the best. recommended lah pokoknya',
               id:'3'
             },
             {
 
-              title:'Komix',
+              title:'*Komix*',
               description:'ini lumayan lah buat terbang seharian',
               id:'4'
             }
           ]
         },
-        // {
-        //   // title:"section 2",
-        //   rows:[
-        //     {
-        //       header:'ini header section 2',
-        //       title:'ini section 2',
-        //       description:'ini desc section 2',
-        //       id:'1'
-        //     },
-        //     {
-        //       header:'ini header section 2/2',
-        //       title:'ini section 2/2',
-        //       description:'ini desc section 2/2',
-        //       id:'2'
-        //     }
-        //   ]
-        // }
       ];
 
       const buttons = [
@@ -305,13 +309,15 @@ export async function startBot() {
           message: {
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: "INFO NONGKI DULU",
+                text: "WHISKEY",
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
-                text: "PILIH JO:",
+                text: "create by Jeff4Dev",
               }),
               header: proto.Message.InteractiveMessage.Header.create({
-                title: "KONTOL BAPAK KAU PECAH",
+                title: "HALO BRO, CAN YOU DRINK A WHISKEY WITH ME?",
+                hasMediaAttachment: true,
+                imageMessage: await generate("image", imageUrl),
               }),
               nativeFlowMessage:
                   proto.Message.InteractiveMessage.NativeFlowMessage.create({
@@ -339,5 +345,133 @@ export async function startBot() {
         console.error("Gagal mengirim pesan balasan:", error);
       }
     }
+
+    if (messagesContent ==='halo'){
+      const buttonIntro = [
+        {
+          name: "quick_reply",
+          buttonParamsJson: JSON.stringify({
+            display_text: "menu",
+            id: "1",
+          }),
+        },
+      ];
+
+      const invasiMessage = {
+        viewOnceMessage: {
+          message: {
+            interactiveMessage: proto.Message.InteractiveMessage.create({
+              body: proto.Message.InteractiveMessage.Body.create({
+                text: "CRM WhatsApp: Tingkatkan Penjualan dan Layanan Pelanggan dengan CRM WhatsApp\n" +
+                    "Solusi CRM WhatsApp CSAI: Otomatisasi, Personalisasi, dan Kinerja Customer Service yang Lebih Baik",
+              }),
+              footer: proto.Message.InteractiveMessage.Footer.create({
+                text: "miliki sekarang!",
+              }),
+              header: proto.Message.InteractiveMessage.Header.create({
+                title: "CSAI.ID",
+                hasMediaAttachment: true,
+                imageMessage: await generate("image", csaiImage),
+              }),
+              nativeFlowMessage:
+                  proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: buttonIntro,
+                    messageParamsJson: JSON.stringify({
+                      from: "api",
+                      templateId: ulid(Date.now()),
+                    }),
+                  }),
+            }),
+          },
+        },
+      };
+
+      const msg = generateWAMessageFromContent(remoteJid, invasiMessage, {
+        userJid: sock.user.id,
+      });
+
+      try {
+        await sock.relayMessage(remoteJid, msg.message, {
+          messageId: msg.key.id,
+        });
+        console.log("Pesan balasan dengan tombol berhasil dikirim");
+      } catch (error) {
+        console.error("Gagal mengirim pesan balasan:", error);
+      }
+    }
+
+
+    if (selectedDisplayText ==='menu'){
+      const listMenu = [
+        {
+          title:"FITUR",
+          rows:[
+            {
+              title:'Produk Kami',
+              id:'1'
+            },
+            {
+              title:'Website Kami',
+              id:'2'
+            }
+          ]
+        },
+
+      ];
+
+      const buttonMenu = [
+        {
+          name: "single_select",
+          buttonParamsJson: JSON.stringify({
+            title: "MENU",
+            sections:listMenu
+          }),
+        },
+      ];
+
+      const invasiMessage = {
+        viewOnceMessage: {
+          message: {
+            interactiveMessage: proto.Message.InteractiveMessage.create({
+              body: proto.Message.InteractiveMessage.Body.create({
+                text: "Terima Kasih sudah memilih kami sebagai platform CRM WHATSAPP terpercaya.",
+              }),
+              footer: proto.Message.InteractiveMessage.Footer.create({
+                text: "klik menu untuk melihat apa yg ada di dalam CSAI",
+              }),
+              header: proto.Message.InteractiveMessage.Header.create({
+                title: "THANK YOU",
+                hasMediaAttachment: true,
+                imageMessage: await generate("image", csaiImage),
+              }),
+              nativeFlowMessage:
+                  proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: buttonMenu,
+                    messageParamsJson: JSON.stringify({
+                      from: "api",
+                      templateId: ulid(Date.now()),
+                    }),
+                  }),
+            }),
+          },
+        },
+      };
+
+      const msg = generateWAMessageFromContent(remoteJid, invasiMessage, {
+        userJid: sock.user.id,
+      });
+
+      try {
+        await sock.relayMessage(remoteJid, msg.message, {
+          messageId: msg.key.id,
+        });
+        console.log("Pesan balasan dengan tombol berhasil dikirim");
+      } catch (error) {
+        console.error("Gagal mengirim pesan balasan:", error);
+      }
+    }
   });
+  sock.ev.on('chats.upsert',(messsage:any)=>{
+    console.log(messsage);
+  })
 }

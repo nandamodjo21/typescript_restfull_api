@@ -5,6 +5,7 @@ import { RegisterService } from "../service/register_service";
 import { RegisterController } from "../controller/register_controller";
 import { transporter } from "../config/email";
 import { ActivationController } from "../controller/activation_controller";
+import {OtpController} from "../controller/otp_controller";
 
 const publicRoute = Router();
 
@@ -15,5 +16,6 @@ publicRoute.get("/users", UserController.users);
 publicRoute.post("/login", LoginController.login);
 publicRoute.post("/register", RegisterController.register);
 publicRoute.get("/activation", ActivationController.activate);
+publicRoute.get("/otp",OtpController.activated);
 
 export default publicRoute;
