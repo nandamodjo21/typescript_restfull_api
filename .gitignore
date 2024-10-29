@@ -4,3 +4,4 @@
 package-lock.json
 yarn.lock
 /sessions
+/src/utils/star_sock.ts
