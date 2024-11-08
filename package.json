@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp .env build\\. && cp package.json build\\. && cp package-lock.json build\\.",
+    "build": "tsc && cp .env build\\. && cp package.json build\\. && cp package-lock.json build\\. && cp assets build",
     "dev": "npx ts-node main.ts",
     "start": "node build/main.js"
   },
